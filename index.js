@@ -2,13 +2,13 @@ const express = require('express');
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
-const cors = require('cors'); // Added CORS
+const cors = require('cors');
 const app = express();
 
-// Enable CORS for all routes
+// Enable CORS
 app.use(cors());
 
-// Middleware for Parsing Form Data
+// Middleware for parsing form data
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
@@ -28,14 +28,13 @@ async function login(enrollmentNo, password) {
         'deviceinfo': 'Xiaomi#M2007J20CI#10',
         'user-agent': 'and',
         'platform': 'A',
-        'content-type': 'application/json',
+        'content-type': 'application/json; charset=UTF-8',
         'accept-encoding': 'gzip'
       }
     });
-    console.log("Login successful: ", response.data);
     return response.data.token;
   } catch (error) {
-    console.error("Login failed: ", error.response ? error.response.data : error.message);
+    console.error("Login failed", error);
     return null;
   }
 }
@@ -50,10 +49,9 @@ async function getBatchVideos(token) {
         'content-type': 'application/json'
       }
     });
-    console.log("Fetched batch videos: ", response.data);
     return response.data.videos;
   } catch (error) {
-    console.error("Failed to fetch batch videos: ", error.response ? error.response.data : error.message);
+    console.error("Failed to fetch batch videos", error);
     return [];
   }
 }
