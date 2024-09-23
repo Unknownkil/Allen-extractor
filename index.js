@@ -68,19 +68,23 @@ function saveUrlsToTxtFile(urls, enrollmentNo) {
 app.post('/extract', async (req, res) => {
   const { enrollmentNo, password } = req.body;
 
+  // Login and get the token
   const token = await login(enrollmentNo, password);
   if (!token) {
     return res.status(500).send('Login failed. Please check your credentials.');
   }
 
+  // Fetch batch videos using the token
   const videos = await getBatchVideos(token);
   if (videos.length === 0) {
     return res.status(500).send('Failed to fetch batch videos.');
   }
 
+  // Extract video URLs and save to TXT file
   const videoUrls = videos.map(video => video.url);
   const filePath = saveUrlsToTxtFile(videoUrls, enrollmentNo);
 
+  // Provide download link for the batch URLs file
   res.send(`<a href="/${enrollmentNo}_batch_urls.txt" download>Download Your Batch URLs</a>`);
 });
 
@@ -88,3 +92,5 @@ app.post('/extract', async (req, res) => {
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000');
 });
+
+module.exports = app;
